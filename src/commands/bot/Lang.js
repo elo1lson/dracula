@@ -1,43 +1,41 @@
-const { MessageActionRow, MessageButton } = require('discord.js');
-const Discord = require('discord.js')
+const snekfetch = require('snekfetch');
 const Command = require('../../structures/command/command.js')
 const Embed = require('../../structures/client/ClientEmbed.js')
 const extra = require('../../extra.js')
+const Discord = require('discord.js')
 module.exports = new Command({
-	name: 'setlang',
-	description: extra.descriptions.SETLANG.description,
-	category: 'Bot',
-	aliases: ['infobot'],
-	usage: {
-		ob: "none",
-		op: "none"
-	},
-	author: 'tomori',
-	run: async (client, message, args) => {
-		const row = new MessageActionRow()
-			.addComponents(
-				new MessageButton()
-				.setCustomId('pt')
-				.setEmoji('🇧🇷')
-				.setLabel('Primary')
-				.setStyle('PRIMARY')
-			)
-		let u = message.author
-		let mainembed = new Embed(u)
-		mainembed.setTitle(extra.run.SETLANG.embed.title)
-		mainembed.setDescription(extra.run.SETLANG.embed.description)
-		mainembed.addField(extra.run.SETLANG.embed.fieldone.name,extra.run.SETLANG.embed.fieldone.value)
-		
-		message.reply({ embeds: [mainembed], components: [row] })
+  name: 'ca',
+  description: "client.lang.examples.CAT.description",
+  category: 'Fun',
+  aliases: ['gato'],
+  usage: 'none',
+  author: 'tomori',
+  run: async (client, message, args) => {
 
-		const filter = i => i.customId === 'pt' && i.user.id === message.author.id;
-		const collector = message.channel.createMessageComponentCollector({ filter, time: 15000 });
-		collector.on('collect', async i => {
-			console.log("333")
-			if (i.customId === 'pt') {
-				await i.update({ components: [row] });
-			}
-		});
-	}
+    let avatar1 = message.author.avatarURL({ dynamic: true, format: "png", size: 1024 });
+    const embed = new Discord.MessageEmbed()
+      .setTitle(`você não é um adm da ${message.guild.name}`, )
+    if (!message.member.permissions.has("ADMINISTRATOR")) {
+      return message.channel.send({ embeds: [embed] })
+    }
 
+    const embed2 = new Discord.MessageEmbed()
+      .setTitle(`Eu não tenho permissão para isso`, "")
+    if (!message.guild.me.permissions.has("ADMISTRATOR")) return message.channel.send({embeds:[embed2]}).then(msg => msg.delete({ timeout: 20000 }))
+
+    message.channel.permissionOverwrites.edit(message.guild.id, {
+      SEND_MESSAGES: false,
+      VIEW_CHANNEL: true
+    })
+
+    const lock = new Discord.MessageEmbed()
+
+      .setTitle(`🔒| canal ${message.channel.name} foi bloqueando com sucesso!!`)
+      .setColor("#C003FC")
+
+
+
+    message.channel.send({embeds: [lock]})
+
+  }
 })
